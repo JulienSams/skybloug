@@ -5,6 +5,7 @@ import { ProfileEdit } from './components/Profile/ProfileEdit'
 import { ArticleList } from './components/Articles/ArticleList'
 import { ArticleEditor } from './components/Editor/ArticleEditor'
 import { BlogHome } from './components/Blog/BlogHome'
+import { ArticleDetail } from './components/Blog/ArticleDetail'
 import { useProfile } from './hooks/useProfile'
 import { useArticles } from './hooks/useArticles'
 import './App.css'
@@ -16,6 +17,7 @@ function App() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [view, setView] = useState<'blog' | 'articles' | 'editor'>('blog');
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -67,14 +69,18 @@ function App() {
     setView('blog');
   };
 
-  // Blog view handlers (placeholder for now, will be fully wired in plan 04-02 and 04-03)
+  // Blog view handlers
   const handleSelectArticle = (id: string) => {
-    // Will be implemented in plan 04-02
-    console.log('Select article:', id);
+    setSelectedArticleId(id);
+  };
+
+  const handleBackToList = () => {
+    setSelectedArticleId(null);
   };
 
   const handleTagClick = (tag: string) => {
-    // Will be implemented in plan 04-03
+    // Will be fully implemented in plan 04-03
+    setSelectedArticleId(null); // Clear article detail if showing
     console.log('Tag clicked:', tag);
   };
 
@@ -97,12 +103,20 @@ function App() {
       }
       content={
         view === 'blog' ? (
-          <BlogHome
-            articles={articles}
-            profile={profile}
-            onArticleClick={handleSelectArticle}
-            onTagClick={handleTagClick}
-          />
+          selectedArticleId ? (
+            <ArticleDetail
+              article={getArticle(selectedArticleId)!}
+              onBack={handleBackToList}
+              onTagClick={handleTagClick}
+            />
+          ) : (
+            <BlogHome
+              articles={articles}
+              profile={profile}
+              onArticleClick={handleSelectArticle}
+              onTagClick={handleTagClick}
+            />
+          )
         ) : view === 'articles' ? (
           <ArticleList
             articles={articles}
