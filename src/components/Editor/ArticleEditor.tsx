@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import TextStyle from '@tiptap/extension-text-style';
+import { TextStyle } from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
 import FontFamily from '@tiptap/extension-font-family';
 import TextAlign from '@tiptap/extension-text-align';
@@ -10,7 +10,7 @@ import Image from '@tiptap/extension-image';
 import Youtube from '@tiptap/extension-youtube';
 import Underline from '@tiptap/extension-underline';
 import { EditorToolbar } from './EditorToolbar';
-import { Article } from '../../types/Article';
+import type { Article } from '../../types/Article';
 
 interface ArticleEditorProps {
   onSave: (article: { title: string; content: string; tags: string[]; status: 'draft' | 'published' }) => void;

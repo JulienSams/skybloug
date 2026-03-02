@@ -1,4 +1,4 @@
-import { Article } from '../../types/Article';
+import type { Article } from '../../types/Article';
 
 interface ArticleListProps {
   articles: Article[];
