@@ -1,60 +1,102 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Profile  } from '../types/Profile';
 import { defaultProfile } from '../types/Profile';
+import * as api from '../services/api';
 
 export function useProfile() {
   const [profile, setProfile] = useState<Profile>(defaultProfile);
+  const [loading, setLoading] = useState(true);
 
-  const updatePhoto = (photo: string | null) => {
+  // Fetch profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await api.getProfile();
+        setProfile({
+          name: data.name,
+          bio: data.bio || '',
+          age: data.age,
+          location: data.location || '',
+          photo: data.photoUrl
+        });
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const updatePhoto = async (photo: string | null) => {
     setProfile(prev => ({ ...prev, photo }));
+    try {
+      await api.updateProfile({ photoUrl: photo || undefined });
+    } catch (error) {
+      console.error('Failed to update photo:', error);
+    }
   };
 
-  const updateName = (name: string) => {
+  const updateName = async (name: string) => {
     setProfile(prev => ({ ...prev, name }));
+    try {
+      await api.updateProfile({ name });
+    } catch (error) {
+      console.error('Failed to update name:', error);
+    }
   };
 
-  const updateBio = (bio: string) => {
+  const updateBio = async (bio: string) => {
     setProfile(prev => ({ ...prev, bio }));
+    try {
+      await api.updateProfile({ bio });
+    } catch (error) {
+      console.error('Failed to update bio:', error);
+    }
   };
 
-  const updateAge = (age: number | null) => {
+  const updateAge = async (age: number | null) => {
     setProfile(prev => ({ ...prev, age }));
+    try {
+      await api.updateProfile({ age: age || undefined });
+    } catch (error) {
+      console.error('Failed to update age:', error);
+    }
   };
 
-  const updateLocation = (location: string) => {
+  const updateLocation = async (location: string) => {
     setProfile(prev => ({ ...prev, location }));
+    try {
+      await api.updateProfile({ location });
+    } catch (error) {
+      console.error('Failed to update location:', error);
+    }
   };
 
-  const handlePhotoUpload = (file: File): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        reject(new Error('File must be an image'));
-        return;
-      }
+  const handlePhotoUpload = async (file: File): Promise<void> => {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      throw new Error('File must be an image');
+    }
 
-      // Validate file size (max 5MB)
-      const maxSize = 5 * 1024 * 1024;
-      if (file.size > maxSize) {
-        reject(new Error('Image must be smaller than 5MB'));
-        return;
-      }
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      throw new Error('Image must be smaller than 5MB');
+    }
 
-      // Convert to base64 data URL
-      const reader = new FileReader();
+    try {
+      // Upload to server
+      const { url } = await api.uploadImage(file);
 
-      reader.onload = (e) => {
-        const dataUrl = e.target?.result as string;
-        updatePhoto(dataUrl);
-        resolve();
-      };
-
-      reader.onerror = () => {
-        reject(new Error('Failed to read file'));
-      };
-
-      reader.readAsDataURL(file);
-    });
+      // Update profile with server URL
+      const fullUrl = `http://localhost:3000${url}`;
+      await updatePhoto(fullUrl);
+    } catch (error) {
+      console.error('Failed to upload photo:', error);
+      throw error;
+    }
   };
 
   return {
@@ -65,5 +107,6 @@ export function useProfile() {
     updateAge,
     updateLocation,
     handlePhotoUpload,
+    loading,
   };
 }
