@@ -18,11 +18,19 @@ export function ArticlePreview({ article, onArticleClick, onTagClick }: ArticleP
     return `${day}/${month}/${year} à ${hours}:${minutes}`;
   };
 
+  // Extract first image from HTML
+  const getFirstImage = (html: string): string | null => {
+    const imgMatch = html.match(/<img[^>]+src="([^">]+)"/);
+    return imgMatch ? imgMatch[1] : null;
+  };
+
   // Strip HTML tags and get first 200 characters
   const getPreviewText = (html: string) => {
     const text = html.replace(/<[^>]*>/g, '');
     return text.length > 200 ? text.substring(0, 200) + '...' : text;
   };
+
+  const firstImage = getFirstImage(article.content);
 
   return (
     <article
@@ -64,6 +72,22 @@ export function ArticlePreview({ article, onArticleClick, onTagClick }: ArticleP
         <span style={{ marginLeft: '5px', cursor: 'pointer' }}>Commenter</span>
       </p>
 
+      {/* Show image if exists */}
+      {firstImage && (
+        <div style={{ marginBottom: '15px' }}>
+          <img
+            src={firstImage}
+            alt="Article preview"
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+              borderRadius: '4px',
+              display: 'block',
+            }}
+          />
+        </div>
+      )}
+
       <p
         style={{
           color: '#CCCCCC',
@@ -74,6 +98,17 @@ export function ArticlePreview({ article, onArticleClick, onTagClick }: ArticleP
         }}
       >
         {getPreviewText(article.content)}
+      </p>
+
+      <p
+        style={{
+          color: '#999',
+          fontSize: '11px',
+          marginBottom: '15px',
+        }}
+      >
+        <span style={{ cursor: 'pointer' }}>18 kiffs</span> |
+        <span style={{ marginLeft: '5px', cursor: 'pointer' }}>5 commentaires</span>
       </p>
 
       {article.tags.length > 0 && (
@@ -103,27 +138,6 @@ export function ArticlePreview({ article, onArticleClick, onTagClick }: ArticleP
           ))}
         </p>
       )}
-
-      <p>
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onArticleClick(article.id);
-          }}
-          style={{
-            color: '#FF1493',
-            textDecoration: 'none',
-            fontSize: '12px',
-            fontWeight: 'bold',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
-          onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
-        >
-          Lire la suite »
-        </a>
-      </p>
     </article>
   );
 }
