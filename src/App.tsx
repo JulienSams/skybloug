@@ -4,6 +4,7 @@ import { ProfileDisplay } from './components/Profile/ProfileDisplay'
 import { ProfileEdit } from './components/Profile/ProfileEdit'
 import { ArticleList } from './components/Articles/ArticleList'
 import { ArticleEditor } from './components/Editor/ArticleEditor'
+import { BlogHome } from './components/Blog/BlogHome'
 import { useProfile } from './hooks/useProfile'
 import { useArticles } from './hooks/useArticles'
 import './App.css'
@@ -66,6 +67,17 @@ function App() {
     setView('blog');
   };
 
+  // Blog view handlers (placeholder for now, will be fully wired in plan 04-02 and 04-03)
+  const handleSelectArticle = (id: string) => {
+    // Will be implemented in plan 04-02
+    console.log('Select article:', id);
+  };
+
+  const handleTagClick = (tag: string) => {
+    // Will be implemented in plan 04-03
+    console.log('Tag clicked:', tag);
+  };
+
   return (
     <SkyblogLayout
       leftSidebar={
@@ -85,58 +97,12 @@ function App() {
       }
       content={
         view === 'blog' ? (
-          <div className="blog-content">
-            <article style={{ marginBottom: '30px' }}>
-              <h1 style={{ color: '#FF1493', borderBottom: '2px solid #FF1493', paddingBottom: '5px' }}>
-                Bienvenue sur mon Skyblog! 🌟
-              </h1>
-              <p className="text-muted" style={{ marginBottom: '15px' }}>
-                Publié le 02/03/2026 à 12:00 |
-                <a href="#" style={{ marginLeft: '5px' }}>18 kiffs</a> |
-                <a href="#" style={{ marginLeft: '5px' }}>Commenter</a>
-              </p>
-              <p>
-                Salut à tous! 👋 Je suis super content de vous retrouver sur mon nouveau skyblog.
-                Ici vous allez pouvoir suivre mes aventures, découvrir mes coups de cœur musicaux
-                et voir plein de photos sympas!
-              </p>
-              <p>
-                N'hésitez pas à laisser des commentaires et à mettre des kiffs si vous aimez!
-                C'est toujours cool de savoir que vous passez par là. 😊
-              </p>
-              <p>
-                <strong>Tags:</strong> <a href="#">bienvenue</a>, <a href="#">skyblog</a>, <a href="#">2006</a>, <a href="#">nostalgie</a>
-              </p>
-            </article>
-
-            <article style={{ marginBottom: '30px' }}>
-              <h1 style={{ color: '#FF1493', borderBottom: '2px solid #FF1493', paddingBottom: '5px' }}>
-                Ma playlist du moment 🎵
-              </h1>
-              <p className="text-muted" style={{ marginBottom: '15px' }}>
-                Publié le 01/03/2026 à 18:30 |
-                <a href="#" style={{ marginLeft: '5px' }}>42 kiffs</a> |
-                <a href="#" style={{ marginLeft: '5px' }}>5 commentaires</a>
-              </p>
-              <p>
-                En ce moment j'écoute beaucoup de musique des années 2000. Ça me rappelle
-                tellement de souvenirs! Voici mes tops du moment:
-              </p>
-              <ul>
-                <li>Tokio Hotel - Monsoon</li>
-                <li>Diam's - La boulette</li>
-                <li>Fatal Bazooka - Fous ta cagoule</li>
-                <li>Rihanna - Umbrella</li>
-                <li>Avril Lavigne - Girlfriend</li>
-              </ul>
-              <p>
-                Et vous, c'est quoi vos sons préférés en ce moment? Dites-moi tout en commentaire! 💬
-              </p>
-              <p>
-                <strong>Tags:</strong> <a href="#">musique</a>, <a href="#">playlist</a>, <a href="#">2000s</a>
-              </p>
-            </article>
-          </div>
+          <BlogHome
+            articles={articles}
+            profile={profile}
+            onArticleClick={handleSelectArticle}
+            onTagClick={handleTagClick}
+          />
         ) : view === 'articles' ? (
           <ArticleList
             articles={articles}
