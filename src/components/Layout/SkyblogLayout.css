@@ -1,0 +1,53 @@
+/*
+ * Skyblog Three-Column Layout
+ * Based on measurements from reference images (see MEASUREMENTS.md)
+ *
+ * Layout structure:
+ * - Total width: 980px centered container
+ * - Left sidebar: 190px (profile)
+ * - Center content: 550px (blog posts)
+ * - Right sidebar: 190px (stats/tags)
+ * - Gaps: 15px between columns
+ */
+
+.skyblog-layout {
+  display: grid;
+  grid-template-columns: 190px 550px 190px;
+  gap: 15px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* Left Sidebar - Profile Area */
+.skyblog-sidebar-left {
+  background-color: var(--skyblog-bg-sidebar-left);
+  color: var(--skyblog-text-inverse);
+  padding: 15px;
+  border: 1px solid var(--skyblog-border-color);
+}
+
+/* Center Content Area - Blog Posts */
+.skyblog-content {
+  background-color: var(--skyblog-bg-content);
+  color: var(--skyblog-text-primary);
+  padding: 20px;
+  border: 1px solid var(--skyblog-border-light);
+  min-height: 600px;
+}
+
+/* Right Sidebar - Stats/Tags/Info */
+.skyblog-sidebar-right {
+  background-color: var(--skyblog-bg-sidebar-right);
+  color: var(--skyblog-text-inverse);
+  padding: 15px;
+  border: 1px solid var(--skyblog-border-color);
+}
+
+/*
+ * Customization notes for future phases:
+ * - Background colors can be overridden via CSS custom properties
+ * - Layout widths are fixed to match authentic Skyblog aesthetic
+ * - Phase 2+ will add background image support via additional CSS
+ */
