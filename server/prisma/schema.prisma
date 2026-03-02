@@ -1,0 +1,61 @@
+// Prisma schema for Skyblog
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  name      String
+  bio       String?
+  age       Int?
+  location  String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Article {
+  id        String   @id @default(uuid())
+  title     String
+  content   String   @db.Text
+  isDraft   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tags      ArticleTag[]
+  comments  Comment[]
+}
+
+model Tag {
+  id       String   @id @default(uuid())
+  name     String   @unique
+  articles ArticleTag[]
+
+  @@index([name])
+}
+
+model ArticleTag {
+  id        String  @id @default(uuid())
+  articleId String
+  tagId     String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, tagId])
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  articleId  String
+  authorName String
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+  article    Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+}
