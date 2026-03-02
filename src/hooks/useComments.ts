@@ -1,28 +1,43 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { Comment } from '../types/Comment';
+import * as api from '../services/api';
 
 export function useComments() {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const getCommentsForArticle = (articleId: string): Comment[] => {
-    return comments
-      .filter((comment) => comment.articleId === articleId)
-      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-  };
+  const getCommentsForArticle = useCallback(async (articleId: string): Promise<Comment[]> => {
+    setLoading(true);
+    try {
+      const data = await api.getComments(articleId);
+      // Convert createdAt strings to Date objects
+      return data.map((comment: any) => ({
+        ...comment,
+        createdAt: new Date(comment.createdAt)
+      }));
+    } catch (error) {
+      console.error('Failed to fetch comments:', error);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const addComment = (articleId: string, authorName: string, content: string) => {
-    const newComment: Comment = {
-      id: crypto.randomUUID(),
-      articleId,
-      authorName,
-      content,
-      createdAt: new Date(),
-    };
-    setComments((prev) => [...prev, newComment]);
+  const addComment = async (articleId: string, authorName: string, content: string): Promise<Comment | null> => {
+    try {
+      const data = await api.createComment(articleId, { authorName, content });
+      return {
+        ...data,
+        createdAt: new Date(data.createdAt)
+      };
+    } catch (error) {
+      console.error('Failed to create comment:', error);
+      return null;
+    }
   };
 
   return {
     getCommentsForArticle,
     addComment,
+    loading,
   };
 }
