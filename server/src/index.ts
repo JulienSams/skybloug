@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import articlesRouter from './routes/articles';
+import profileRouter from './routes/profile';
+import commentsRouter from './routes/comments';
 
 dotenv.config();
 
@@ -24,6 +26,8 @@ app.get('/api/health', (req, res) => {
 
 // API routes
 app.use('/api', articlesRouter);
+app.use('/api', profileRouter);
+app.use('/api', commentsRouter);
 
 // Start server
 app.listen(PORT, () => {
