@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import articlesRouter from './routes/articles';
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ app.use(express.json());
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// API routes
+app.use('/api', articlesRouter);
 
 // Start server
 app.listen(PORT, () => {
