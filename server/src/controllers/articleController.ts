@@ -90,8 +90,11 @@ export const getArticle = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    // Ensure id is a string (Express can provide string | string[])
+    const articleId = Array.isArray(id) ? id[0] : id;
+
     const article = await prisma.article.findUnique({
-      where: { id },
+      where: { id: articleId },
       include: {
         tags: {
           include: {
@@ -128,20 +131,23 @@ export const updateArticle = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { title, content, isDraft, tags } = req.body;
 
+    // Ensure id is a string (Express can provide string | string[])
+    const articleId = Array.isArray(id) ? id[0] : id;
+
     // Check if article exists
-    const existing = await prisma.article.findUnique({ where: { id } });
+    const existing = await prisma.article.findUnique({ where: { id: articleId } });
     if (!existing) {
       return res.status(404).json({ error: 'Article not found' });
     }
 
     // Delete existing tag associations
     await prisma.articleTag.deleteMany({
-      where: { articleId: id }
+      where: { articleId }
     });
 
     // Update article with new tags
     const article = await prisma.article.update({
-      where: { id },
+      where: { id: articleId },
       data: {
         ...(title && { title }),
         ...(content && { content }),
@@ -185,15 +191,18 @@ export const deleteArticle = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    // Ensure id is a string (Express can provide string | string[])
+    const articleId = Array.isArray(id) ? id[0] : id;
+
     // Check if article exists
-    const existing = await prisma.article.findUnique({ where: { id } });
+    const existing = await prisma.article.findUnique({ where: { id: articleId } });
     if (!existing) {
       return res.status(404).json({ error: 'Article not found' });
     }
 
     // Delete article (cascade will handle ArticleTag and Comments)
     await prisma.article.delete({
-      where: { id }
+      where: { id: articleId }
     });
 
     res.status(204).send();

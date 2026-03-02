@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SkyblogLayout } from './components/Layout/SkyblogLayout'
 import { ProfileDisplay } from './components/Profile/ProfileDisplay'
 import { ProfileEdit } from './components/Profile/ProfileEdit'
@@ -9,6 +9,7 @@ import { ArticleDetail } from './components/Blog/ArticleDetail'
 import { useProfile } from './hooks/useProfile'
 import { useArticles } from './hooks/useArticles'
 import { useComments } from './hooks/useComments'
+import type { Comment } from './types/Comment'
 import './App.css'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -72,6 +74,15 @@ function App() {
     setView('blog');
   };
 
+  // Load comments when article is selected
+  useEffect(() => {
+    if (selectedArticleId) {
+      getCommentsForArticle(selectedArticleId).then(setComments);
+    } else {
+      setComments([]);
+    }
+  }, [selectedArticleId, getCommentsForArticle]);
+
   // Blog view handlers
   const handleSelectArticle = (id: string) => {
     setSelectedArticleId(id);
@@ -79,6 +90,16 @@ function App() {
 
   const handleBackToList = () => {
     setSelectedArticleId(null);
+  };
+
+  const handleAddComment = async (authorName: string, content: string) => {
+    if (!selectedArticleId) return;
+    const newComment = await addComment(selectedArticleId, authorName, content);
+    if (newComment) {
+      // Reload comments after adding a new one
+      const updatedComments = await getCommentsForArticle(selectedArticleId);
+      setComments(updatedComments);
+    }
   };
 
   const handleTagClick = (tag: string) => {
@@ -117,10 +138,10 @@ function App() {
           selectedArticleId ? (
             <ArticleDetail
               article={getArticle(selectedArticleId)!}
-              comments={getCommentsForArticle(selectedArticleId)}
+              comments={comments}
               onBack={handleBackToList}
               onTagClick={handleTagClick}
-              onAddComment={(authorName, content) => addComment(selectedArticleId, authorName, content)}
+              onAddComment={handleAddComment}
             />
           ) : (
             <BlogHome
@@ -142,7 +163,7 @@ function App() {
           />
         ) : (
           <ArticleEditor
-            article={editingArticleId ? getArticle(editingArticleId) : undefined}
+            initialArticle={editingArticleId ? getArticle(editingArticleId) : undefined}
             onSave={handleSaveArticle}
             onCancel={handleCancelEditor}
           />
