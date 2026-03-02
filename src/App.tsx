@@ -56,11 +56,10 @@ function App() {
   };
 
   const handleSaveArticle = (article: { title: string; content: string; tags: string[]; status: 'draft' | 'published' }) => {
-    const isDraft = article.status === 'draft';
     if (editingArticleId) {
-      updateArticle(editingArticleId, { title: article.title, content: article.content, tags: article.tags, isDraft });
+      updateArticle(editingArticleId, { title: article.title, content: article.content, tags: article.tags, status: article.status });
     } else {
-      createArticle(article.title, article.content, article.tags, isDraft);
+      createArticle(article);
     }
     setView('articles');
     setEditingArticleId(null);
