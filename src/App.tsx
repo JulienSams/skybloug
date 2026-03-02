@@ -1,34 +1,46 @@
+import { useState } from 'react'
 import { SkyblogLayout } from './components/Layout/SkyblogLayout'
+import { ProfileDisplay } from './components/Profile/ProfileDisplay'
+import { ProfileEdit } from './components/Profile/ProfileEdit'
+import { useProfile } from './hooks/useProfile'
 import './App.css'
 
 function App() {
+  const { profile, updateName, updateBio, updateAge, updateLocation, handlePhotoUpload } = useProfile();
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleEdit = () => {
+    setIsEditMode(true);
+  };
+
+  const handleSave = (updatedProfile: Partial<typeof profile>) => {
+    if (updatedProfile.name !== undefined) updateName(updatedProfile.name);
+    if (updatedProfile.bio !== undefined) updateBio(updatedProfile.bio);
+    if (updatedProfile.age !== undefined) updateAge(updatedProfile.age);
+    if (updatedProfile.location !== undefined) updateLocation(updatedProfile.location);
+    setIsEditMode(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditMode(false);
+  };
+
   return (
     <SkyblogLayout
       leftSidebar={
-        <div className="profile-section">
-          <div className="profile-photo" style={{
-            width: '120px',
-            height: '120px',
-            backgroundColor: '#FF1493',
-            margin: '0 auto 15px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '2px solid #FFFFFF'
-          }}>
-            <span style={{ fontSize: '48px' }}>👤</span>
-          </div>
-          <h2 style={{ textAlign: 'center', color: '#FFFFFF' }}>MonSkyblog</h2>
-          <div className="section-divider" style={{ borderColor: '#444' }}></div>
-          <div style={{ color: '#CCCCCC', fontSize: '11px' }}>
-            <p><strong>Nom:</strong> Utilisateur</p>
-            <p><strong>Âge:</strong> 25 ans</p>
-            <p><strong>Localisation:</strong> Paris, France</p>
-            <div className="section-divider" style={{ borderColor: '#444' }}></div>
-            <p><strong>Description:</strong></p>
-            <p>Bienvenue sur mon skyblog! Ici je partage ma passion pour la musique, mes photos et mes coups de cœur du moment.</p>
-          </div>
-        </div>
+        isEditMode ? (
+          <ProfileEdit
+            profile={profile}
+            onSave={handleSave}
+            onCancel={handleCancel}
+            onPhotoUpload={handlePhotoUpload}
+          />
+        ) : (
+          <ProfileDisplay
+            profile={profile}
+            onEdit={handleEdit}
+          />
+        )
       }
       content={
         <div className="blog-content">
