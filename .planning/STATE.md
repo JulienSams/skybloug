@@ -18,7 +18,7 @@ progress:
 
 ## Current Status
 
-**Phase:** 3 complete, ready for Phase 4
+**Phase:** 6 in progress (1/5 plans complete)
 **Progress:** 3/6 phases complete (50%)
 
 ## Project Reference
@@ -26,7 +26,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** The visual experience must feel authentically Skyblog — vibrant customizable backgrounds, the classic layout, and that distinctive early social web energy.
-**Current focus:** Phase 3 complete - users can now create, edit, and manage rich text articles with TipTap editor, media embedding, and full CRUD operations. Ready for Phase 4: Content Display
+**Current focus:** Phase 6 in progress - backend persistence with Node.js + Express + PostgreSQL + Prisma. Plan 06-01 complete (backend setup and database schema).
 
 ## Phase Progress
 
@@ -37,9 +37,19 @@ See: .planning/PROJECT.md (updated 2026-03-02)
 | 3 | Article Creation | ✓ Complete | 4/4 | 100% |
 | 4 | Content Display | Not started | 0/0 | 0% |
 | 5 | Social Interaction | Not started | 0/0 | 0% |
-| 6 | Backend Persistence | Not started | 0/0 | 0% |
+| 6 | Backend Persistence | ◆ In Progress | 1/5 | 20% |
 
 ## Recent Decisions
+
+**Phase 6 - Plan 06-01 (2026-03-02):**
+- Set up Node.js + Express + TypeScript backend in server/ directory
+- Configured Prisma ORM with PostgreSQL (downgraded to v5.22 for stability)
+- Created database schema: Profile, Article, Tag (many-to-many), Comment models
+- All models use UUID primary keys with cascade deletes on relationships
+- Generated Prisma Client for type-safe database access
+- Created Express server with CORS for frontend (localhost:5174)
+- Added health check endpoint: GET /api/health
+- PostgreSQL setup deferred - documented in server/README.md
 
 **Phase 3 (2026-03-02):**
 - Integrated TipTap editor with 10 extensions (formatting, colors, fonts, media)
@@ -71,10 +81,8 @@ See: .planning/PROJECT.md (updated 2026-03-02)
 
 ## Next Action
 
-Run `/gsd:discuss-phase 4` to gather context for Phase 4: Content Display
-
-Or start planning immediately with `/gsd:plan-phase 4`
+Continue Phase 6 execution - Wave 2 (Plans 06-02 and 06-03) implementing Articles API and Profile/Comments API
 
 ---
 *State initialized: 2026-03-02*
-*Last updated: 2026-03-02 after Phase 3 completion*
+*Last updated: 2026-03-02 during Phase 6 execution*
