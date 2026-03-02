@@ -8,11 +8,13 @@ import { BlogHome } from './components/Blog/BlogHome'
 import { ArticleDetail } from './components/Blog/ArticleDetail'
 import { useProfile } from './hooks/useProfile'
 import { useArticles } from './hooks/useArticles'
+import { useComments } from './hooks/useComments'
 import './App.css'
 
 function App() {
   const { profile, updateName, updateBio, updateAge, updateLocation, handlePhotoUpload } = useProfile();
   const { articles, createArticle, updateArticle, deleteArticle, getArticle } = useArticles();
+  const { getCommentsForArticle, addComment } = useComments();
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [view, setView] = useState<'blog' | 'articles' | 'editor'>('blog');
@@ -115,8 +117,10 @@ function App() {
           selectedArticleId ? (
             <ArticleDetail
               article={getArticle(selectedArticleId)!}
+              comments={getCommentsForArticle(selectedArticleId)}
               onBack={handleBackToList}
               onTagClick={handleTagClick}
+              onAddComment={(authorName, content) => addComment(selectedArticleId, authorName, content)}
             />
           ) : (
             <BlogHome

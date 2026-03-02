@@ -1,12 +1,17 @@
 import type { Article } from '../../types/Article';
+import type { Comment } from '../../types/Comment';
+import { CommentForm } from '../Comments/CommentForm';
+import { CommentList } from '../Comments/CommentList';
 
 interface ArticleDetailProps {
   article: Article;
+  comments: Comment[];
   onBack: () => void;
   onTagClick: (tag: string) => void;
+  onAddComment: (authorName: string, content: string) => void;
 }
 
-export function ArticleDetail({ article, onBack, onTagClick }: ArticleDetailProps) {
+export function ArticleDetail({ article, comments, onBack, onTagClick, onAddComment }: ArticleDetailProps) {
   // Format date as DD/MM/YYYY à HH:MM
   const formatDate = (date: Date) => {
     const d = new Date(date);
@@ -124,9 +129,32 @@ export function ArticleDetail({ article, onBack, onTagClick }: ArticleDetailProp
             fontSize: '11px',
           }}
         >
-          <p>18 kiffs | 5 commentaires</p>
+          <p>18 kiffs | {comments.length} commentaire{comments.length !== 1 ? 's' : ''}</p>
         </div>
       </article>
+
+      {/* Comments Section */}
+      <div
+        style={{
+          marginTop: '40px',
+          paddingTop: '30px',
+          borderTop: '2px solid #444',
+        }}
+      >
+        <h2
+          style={{
+            color: '#FF1493',
+            fontSize: '20px',
+            marginBottom: '20px',
+            fontFamily: 'Verdana, Arial, sans-serif',
+          }}
+        >
+          Commentaires ({comments.length})
+        </h2>
+
+        <CommentList comments={comments} />
+        <CommentForm onSubmit={onAddComment} />
+      </div>
     </div>
   );
 }
