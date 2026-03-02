@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Editor } from '@tiptap/react';
 
 interface EditorToolbarProps {
@@ -5,9 +6,58 @@ interface EditorToolbarProps {
 }
 
 export function EditorToolbar({ editor }: EditorToolbarProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   if (!editor) {
     return null;
   }
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert('Image must be smaller than 5MB');
+      return;
+    }
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      editor.chain().focus().setImage({ src: dataUrl }).run();
+    };
+    reader.onerror = () => {
+      alert('Failed to read file');
+    };
+    reader.readAsDataURL(file);
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleYouTubeEmbed = () => {
+    const url = window.prompt('Enter YouTube URL:');
+    if (!url) return;
+
+    // Basic validation
+    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+      alert('Please enter a valid YouTube URL');
+      return;
+    }
+
+    editor.chain().focus().setYoutubeVideo({ src: url }).run();
+  };
 
   const buttonStyle = (isActive: boolean) => ({
     backgroundColor: isActive ? '#FF1493' : '#333',
@@ -180,6 +230,33 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
           Unlink
         </button>
       )}
+
+      <div style={{ width: '1px', height: '20px', backgroundColor: '#444', margin: '0 5px' }} />
+
+      {/* Media */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        style={{ display: 'none' }}
+      />
+
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        style={buttonStyle(false)}
+        title="Add Image"
+      >
+        🖼️ Image
+      </button>
+
+      <button
+        onClick={handleYouTubeEmbed}
+        style={buttonStyle(false)}
+        title="Add YouTube Video"
+      >
+        ▶️ Video
+      </button>
     </div>
   );
 }
