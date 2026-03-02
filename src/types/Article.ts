@@ -4,6 +4,7 @@ export interface Article {
   content: string; // TipTap HTML content
   status: 'draft' | 'published';
   tags: string[];
+  kiffs: number;
   createdAt: Date;
   updatedAt: Date;
 }

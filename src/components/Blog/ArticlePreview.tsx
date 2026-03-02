@@ -72,7 +72,7 @@ export function ArticlePreview({ article, comments, onArticleClick, onTagClick }
         }}
       >
         Publié le {formatDate(article.createdAt)} |
-        <span style={{ marginLeft: '5px', cursor: 'pointer' }}>18 kiffs</span> |
+        <span style={{ marginLeft: '5px', cursor: 'pointer' }}>{article.kiffs} kiff{article.kiffs !== 1 ? 's' : ''}</span> |
         <span style={{ marginLeft: '5px', cursor: 'pointer' }}>Commenter</span>
       </p>
 
@@ -111,7 +111,7 @@ export function ArticlePreview({ article, comments, onArticleClick, onTagClick }
           marginBottom: '15px',
         }}
       >
-        <span style={{ cursor: 'pointer' }}>18 kiffs</span> |
+        <span style={{ cursor: 'pointer' }}>{article.kiffs} kiff{article.kiffs !== 1 ? 's' : ''}</span> |
         <span style={{ marginLeft: '5px', cursor: 'pointer' }}>
           {comments.length} commentaire{comments.length !== 1 ? 's' : ''}
         </span>

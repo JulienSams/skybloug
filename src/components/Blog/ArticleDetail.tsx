@@ -68,8 +68,8 @@ export function ArticleDetail({ article, comments, onBack, onTagClick, onAddComm
           }}
         >
           Publié le {formatDate(article.createdAt)} |
-          <span style={{ marginLeft: '5px' }}>18 kiffs</span> |
-          <span style={{ marginLeft: '5px' }}>5 commentaires</span>
+          <span style={{ marginLeft: '5px' }}>{article.kiffs} kiff{article.kiffs !== 1 ? 's' : ''}</span> |
+          <span style={{ marginLeft: '5px' }}>{comments.length} commentaire{comments.length !== 1 ? 's' : ''}</span>
         </p>
 
         <div
@@ -129,7 +129,7 @@ export function ArticleDetail({ article, comments, onBack, onTagClick, onAddComm
             fontSize: '11px',
           }}
         >
-          <p>18 kiffs | {comments.length} commentaire{comments.length !== 1 ? 's' : ''}</p>
+          <p>{article.kiffs} kiff{article.kiffs !== 1 ? 's' : ''} | {comments.length} commentaire{comments.length !== 1 ? 's' : ''}</p>
         </div>
       </article>
 
