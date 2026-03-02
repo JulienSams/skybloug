@@ -18,6 +18,7 @@ function App() {
   const [view, setView] = useState<'blog' | 'articles' | 'editor'>('blog');
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -79,10 +80,18 @@ function App() {
   };
 
   const handleTagClick = (tag: string) => {
-    // Will be fully implemented in plan 04-03
+    setSelectedTag(tag);
     setSelectedArticleId(null); // Clear article detail if showing
-    console.log('Tag clicked:', tag);
   };
+
+  const handleClearTagFilter = () => {
+    setSelectedTag(null);
+  };
+
+  // Filter articles by tag if selectedTag is set
+  const filteredArticles = selectedTag
+    ? articles.filter((article) => article.tags.includes(selectedTag))
+    : articles;
 
   return (
     <SkyblogLayout
@@ -111,10 +120,12 @@ function App() {
             />
           ) : (
             <BlogHome
-              articles={articles}
+              articles={filteredArticles}
               profile={profile}
               onArticleClick={handleSelectArticle}
               onTagClick={handleTagClick}
+              selectedTag={selectedTag}
+              onClearTagFilter={handleClearTagFilter}
             />
           )
         ) : view === 'articles' ? (
