@@ -99,7 +99,7 @@ export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: Articl
                 }}>
                   Created: {formatDate(article.createdAt)}
                 </p>
-                {article.tags.length > 0 && (
+                {article.tags && article.tags.length > 0 && (
                   <div style={{ marginTop: '5px', display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
                     {article.tags.map((tag, i) => (
                       <span

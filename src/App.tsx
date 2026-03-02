@@ -55,11 +55,12 @@ function App() {
     deleteArticle(id);
   };
 
-  const handleSaveArticle = (title: string, content: string, tags: string[], isDraft: boolean) => {
+  const handleSaveArticle = (article: { title: string; content: string; tags: string[]; status: 'draft' | 'published' }) => {
+    const isDraft = article.status === 'draft';
     if (editingArticleId) {
-      updateArticle(editingArticleId, { title, content, tags, isDraft });
+      updateArticle(editingArticleId, { title: article.title, content: article.content, tags: article.tags, isDraft });
     } else {
-      createArticle(title, content, tags, isDraft);
+      createArticle(article.title, article.content, article.tags, isDraft);
     }
     setView('articles');
     setEditingArticleId(null);

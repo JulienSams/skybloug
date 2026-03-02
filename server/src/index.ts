@@ -22,6 +22,8 @@ app.use(cors({
 app.use(express.json());
 
 // Serve uploaded images as static files
+// In development (ts-node), __dirname is src/, so we need to go up one level
+// In production (compiled), __dirname is dist/, so we still need to go up one level
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check endpoint
