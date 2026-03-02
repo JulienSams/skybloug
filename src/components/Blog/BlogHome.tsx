@@ -1,17 +1,19 @@
 import type { Article } from '../../types/Article';
 import type { Profile } from '../../types/Profile';
+import type { Comment } from '../../types/Comment';
 import { ArticlePreview } from './ArticlePreview';
 
 interface BlogHomeProps {
   articles: Article[];
   profile: Profile;
+  commentsMap: Record<string, Comment[]>;
   onArticleClick: (id: string) => void;
   onTagClick: (tag: string) => void;
   selectedTag: string | null;
   onClearTagFilter: () => void;
 }
 
-export function BlogHome({ articles, profile, onArticleClick, onTagClick, selectedTag, onClearTagFilter }: BlogHomeProps) {
+export function BlogHome({ articles, profile, commentsMap, onArticleClick, onTagClick, selectedTag, onClearTagFilter }: BlogHomeProps) {
   // Filter to only published articles and sort by date (newest first)
   const publishedArticles = articles
     .filter((article) => !article.isDraft)
@@ -79,6 +81,7 @@ export function BlogHome({ articles, profile, onArticleClick, onTagClick, select
           <ArticlePreview
             key={article.id}
             article={article}
+            comments={commentsMap[article.id] || []}
             onArticleClick={onArticleClick}
             onTagClick={onTagClick}
           />

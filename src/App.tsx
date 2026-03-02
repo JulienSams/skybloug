@@ -23,6 +23,7 @@ function App() {
   const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [allComments, setAllComments] = useState<Record<string, Comment[]>>({});
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -73,6 +74,21 @@ function App() {
   const handleBackToBlog = () => {
     setView('blog');
   };
+
+  // Load all comments for all articles on mount
+  useEffect(() => {
+    const loadAllComments = async () => {
+      const commentsMap: Record<string, Comment[]> = {};
+      for (const article of articles) {
+        const articleComments = await getCommentsForArticle(article.id);
+        commentsMap[article.id] = articleComments;
+      }
+      setAllComments(commentsMap);
+    };
+    if (articles.length > 0) {
+      loadAllComments();
+    }
+  }, [articles, getCommentsForArticle]);
 
   // Load comments when article is selected
   useEffect(() => {
@@ -147,6 +163,7 @@ function App() {
             <BlogHome
               articles={filteredArticles}
               profile={profile}
+              commentsMap={allComments}
               onArticleClick={handleSelectArticle}
               onTagClick={handleTagClick}
               selectedTag={selectedTag}

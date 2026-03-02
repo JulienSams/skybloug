@@ -1,12 +1,14 @@
 import type { Article } from '../../types/Article';
+import type { Comment } from '../../types/Comment';
 
 interface ArticlePreviewProps {
   article: Article;
+  comments: Comment[];
   onArticleClick: (id: string) => void;
   onTagClick: (tag: string) => void;
 }
 
-export function ArticlePreview({ article, onArticleClick, onTagClick }: ArticlePreviewProps) {
+export function ArticlePreview({ article, comments, onArticleClick, onTagClick }: ArticlePreviewProps) {
   // Format date as DD/MM/YYYY à HH:MM
   const formatDate = (date: Date) => {
     const d = new Date(date);
@@ -31,6 +33,8 @@ export function ArticlePreview({ article, onArticleClick, onTagClick }: ArticleP
   };
 
   const firstImage = getFirstImage(article.content);
+  const previewComments = comments.slice(0, 2);
+  const hasMoreComments = comments.length > 2;
 
   return (
     <article
@@ -108,8 +112,61 @@ export function ArticlePreview({ article, onArticleClick, onTagClick }: ArticleP
         }}
       >
         <span style={{ cursor: 'pointer' }}>18 kiffs</span> |
-        <span style={{ marginLeft: '5px', cursor: 'pointer' }}>5 commentaires</span>
+        <span style={{ marginLeft: '5px', cursor: 'pointer' }}>
+          {comments.length} commentaire{comments.length !== 1 ? 's' : ''}
+        </span>
       </p>
+
+      {/* Show preview of first 2 comments */}
+      {previewComments.length > 0 && (
+        <div style={{ marginBottom: '15px', borderTop: '1px solid #333', paddingTop: '10px' }}>
+          {previewComments.map((comment) => (
+            <div
+              key={comment.id}
+              style={{
+                backgroundColor: '#0a0a0a',
+                padding: '10px',
+                borderRadius: '4px',
+                marginBottom: '8px',
+              }}
+            >
+              <div style={{ marginBottom: '5px' }}>
+                <strong style={{ color: '#FF1493', fontSize: '11px' }}>
+                  {comment.authorName}
+                </strong>
+                <span style={{ color: '#666', fontSize: '10px', marginLeft: '8px' }}>
+                  {formatDate(comment.createdAt)}
+                </span>
+              </div>
+              <p
+                style={{
+                  color: '#AAA',
+                  fontSize: '12px',
+                  margin: 0,
+                  lineHeight: '1.4',
+                }}
+              >
+                {comment.content.length > 100
+                  ? comment.content.substring(0, 100) + '...'
+                  : comment.content}
+              </p>
+            </div>
+          ))}
+          {hasMoreComments && (
+            <p
+              style={{
+                color: '#FF1493',
+                fontSize: '11px',
+                textAlign: 'center',
+                margin: '5px 0 0 0',
+                cursor: 'pointer',
+              }}
+            >
+              ... voir tous les commentaires
+            </p>
+          )}
+        </div>
+      )}
 
       {article.tags.length > 0 && (
         <p style={{ marginBottom: '10px' }}>
