@@ -1,4 +1,4 @@
-import { Profile } from '../../types/Profile';
+import type { Profile } from '../../types/Profile';
 
 interface ProfileDisplayProps {
   profile: Profile;

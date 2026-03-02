@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Article, NewArticle } from '../types/Article';
+import type { NewArticle } from '../types/Article';
+import type { Article  } from '../types/Article';
 
 export function useArticles() {
   const [articles, setArticles] = useState<Article[]>([]);

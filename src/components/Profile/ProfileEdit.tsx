@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Profile } from '../../types/Profile';
+import type { Profile } from '../../types/Profile';
 
 interface ProfileEditProps {
   profile: Profile;

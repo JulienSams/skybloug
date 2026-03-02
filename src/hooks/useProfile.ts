@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Profile, defaultProfile } from '../types/Profile';
+import type { Profile  } from '../types/Profile';
+import { defaultProfile } from '../types/Profile';
 
 export function useProfile() {
   const [profile, setProfile] = useState<Profile>(defaultProfile);
