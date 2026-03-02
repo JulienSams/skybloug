@@ -1,5 +1,6 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Editor } from '@tiptap/react';
+import * as api from '../../services/api';
 
 interface EditorToolbarProps {
   editor: Editor | null;
@@ -7,12 +8,13 @@ interface EditorToolbarProps {
 
 export function EditorToolbar({ editor }: EditorToolbarProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   if (!editor) {
     return null;
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -29,20 +31,22 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
       return;
     }
 
-    // Convert to base64
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      editor.chain().focus().setImage({ src: dataUrl }).run();
-    };
-    reader.onerror = () => {
-      alert('Failed to read file');
-    };
-    reader.readAsDataURL(file);
-
-    // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    // Upload to server
+    setUploading(true);
+    try {
+      const { url } = await api.uploadImage(file);
+      // Use full URL with server address
+      const fullUrl = `http://localhost:3000${url}`;
+      editor.chain().focus().setImage({ src: fullUrl }).run();
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setUploading(false);
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -246,8 +250,9 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
         onClick={() => fileInputRef.current?.click()}
         style={buttonStyle(false)}
         title="Add Image"
+        disabled={uploading}
       >
-        🖼️ Image
+        {uploading ? '⏳ Uploading...' : '🖼️ Image'}
       </button>
 
       <button
