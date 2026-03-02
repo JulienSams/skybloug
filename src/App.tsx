@@ -2,12 +2,19 @@ import { useState } from 'react'
 import { SkyblogLayout } from './components/Layout/SkyblogLayout'
 import { ProfileDisplay } from './components/Profile/ProfileDisplay'
 import { ProfileEdit } from './components/Profile/ProfileEdit'
+import { ArticleList } from './components/Articles/ArticleList'
+import { ArticleEditor } from './components/Editor/ArticleEditor'
 import { useProfile } from './hooks/useProfile'
+import { useArticles } from './hooks/useArticles'
 import './App.css'
 
 function App() {
   const { profile, updateName, updateBio, updateAge, updateLocation, handlePhotoUpload } = useProfile();
+  const { articles, createArticle, updateArticle, deleteArticle, getArticle } = useArticles();
+
   const [isEditMode, setIsEditMode] = useState(false);
+  const [view, setView] = useState<'blog' | 'articles' | 'editor'>('blog');
+  const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -23,6 +30,40 @@ function App() {
 
   const handleCancel = () => {
     setIsEditMode(false);
+  };
+
+  // Article management handlers
+  const handleNewArticle = () => {
+    setEditingArticleId(null);
+    setView('editor');
+  };
+
+  const handleEditArticle = (id: string) => {
+    setEditingArticleId(id);
+    setView('editor');
+  };
+
+  const handleDeleteArticle = (id: string) => {
+    deleteArticle(id);
+  };
+
+  const handleSaveArticle = (title: string, content: string, tags: string[], isDraft: boolean) => {
+    if (editingArticleId) {
+      updateArticle(editingArticleId, { title, content, tags, isDraft });
+    } else {
+      createArticle(title, content, tags, isDraft);
+    }
+    setView('articles');
+    setEditingArticleId(null);
+  };
+
+  const handleCancelEditor = () => {
+    setView('articles');
+    setEditingArticleId(null);
+  };
+
+  const handleBackToBlog = () => {
+    setView('blog');
   };
 
   return (
@@ -43,61 +84,123 @@ function App() {
         )
       }
       content={
-        <div className="blog-content">
-          <article style={{ marginBottom: '30px' }}>
-            <h1 style={{ color: '#FF1493', borderBottom: '2px solid #FF1493', paddingBottom: '5px' }}>
-              Bienvenue sur mon Skyblog! 🌟
-            </h1>
-            <p className="text-muted" style={{ marginBottom: '15px' }}>
-              Publié le 02/03/2026 à 12:00 |
-              <a href="#" style={{ marginLeft: '5px' }}>18 kiffs</a> |
-              <a href="#" style={{ marginLeft: '5px' }}>Commenter</a>
-            </p>
-            <p>
-              Salut à tous! 👋 Je suis super content de vous retrouver sur mon nouveau skyblog.
-              Ici vous allez pouvoir suivre mes aventures, découvrir mes coups de cœur musicaux
-              et voir plein de photos sympas!
-            </p>
-            <p>
-              N'hésitez pas à laisser des commentaires et à mettre des kiffs si vous aimez!
-              C'est toujours cool de savoir que vous passez par là. 😊
-            </p>
-            <p>
-              <strong>Tags:</strong> <a href="#">bienvenue</a>, <a href="#">skyblog</a>, <a href="#">2006</a>, <a href="#">nostalgie</a>
-            </p>
-          </article>
+        view === 'blog' ? (
+          <div className="blog-content">
+            <article style={{ marginBottom: '30px' }}>
+              <h1 style={{ color: '#FF1493', borderBottom: '2px solid #FF1493', paddingBottom: '5px' }}>
+                Bienvenue sur mon Skyblog! 🌟
+              </h1>
+              <p className="text-muted" style={{ marginBottom: '15px' }}>
+                Publié le 02/03/2026 à 12:00 |
+                <a href="#" style={{ marginLeft: '5px' }}>18 kiffs</a> |
+                <a href="#" style={{ marginLeft: '5px' }}>Commenter</a>
+              </p>
+              <p>
+                Salut à tous! 👋 Je suis super content de vous retrouver sur mon nouveau skyblog.
+                Ici vous allez pouvoir suivre mes aventures, découvrir mes coups de cœur musicaux
+                et voir plein de photos sympas!
+              </p>
+              <p>
+                N'hésitez pas à laisser des commentaires et à mettre des kiffs si vous aimez!
+                C'est toujours cool de savoir que vous passez par là. 😊
+              </p>
+              <p>
+                <strong>Tags:</strong> <a href="#">bienvenue</a>, <a href="#">skyblog</a>, <a href="#">2006</a>, <a href="#">nostalgie</a>
+              </p>
+            </article>
 
-          <article style={{ marginBottom: '30px' }}>
-            <h1 style={{ color: '#FF1493', borderBottom: '2px solid #FF1493', paddingBottom: '5px' }}>
-              Ma playlist du moment 🎵
-            </h1>
-            <p className="text-muted" style={{ marginBottom: '15px' }}>
-              Publié le 01/03/2026 à 18:30 |
-              <a href="#" style={{ marginLeft: '5px' }}>42 kiffs</a> |
-              <a href="#" style={{ marginLeft: '5px' }}>5 commentaires</a>
-            </p>
-            <p>
-              En ce moment j'écoute beaucoup de musique des années 2000. Ça me rappelle
-              tellement de souvenirs! Voici mes tops du moment:
-            </p>
-            <ul>
-              <li>Tokio Hotel - Monsoon</li>
-              <li>Diam's - La boulette</li>
-              <li>Fatal Bazooka - Fous ta cagoule</li>
-              <li>Rihanna - Umbrella</li>
-              <li>Avril Lavigne - Girlfriend</li>
-            </ul>
-            <p>
-              Et vous, c'est quoi vos sons préférés en ce moment? Dites-moi tout en commentaire! 💬
-            </p>
-            <p>
-              <strong>Tags:</strong> <a href="#">musique</a>, <a href="#">playlist</a>, <a href="#">2000s</a>
-            </p>
-          </article>
-        </div>
+            <article style={{ marginBottom: '30px' }}>
+              <h1 style={{ color: '#FF1493', borderBottom: '2px solid #FF1493', paddingBottom: '5px' }}>
+                Ma playlist du moment 🎵
+              </h1>
+              <p className="text-muted" style={{ marginBottom: '15px' }}>
+                Publié le 01/03/2026 à 18:30 |
+                <a href="#" style={{ marginLeft: '5px' }}>42 kiffs</a> |
+                <a href="#" style={{ marginLeft: '5px' }}>5 commentaires</a>
+              </p>
+              <p>
+                En ce moment j'écoute beaucoup de musique des années 2000. Ça me rappelle
+                tellement de souvenirs! Voici mes tops du moment:
+              </p>
+              <ul>
+                <li>Tokio Hotel - Monsoon</li>
+                <li>Diam's - La boulette</li>
+                <li>Fatal Bazooka - Fous ta cagoule</li>
+                <li>Rihanna - Umbrella</li>
+                <li>Avril Lavigne - Girlfriend</li>
+              </ul>
+              <p>
+                Et vous, c'est quoi vos sons préférés en ce moment? Dites-moi tout en commentaire! 💬
+              </p>
+              <p>
+                <strong>Tags:</strong> <a href="#">musique</a>, <a href="#">playlist</a>, <a href="#">2000s</a>
+              </p>
+            </article>
+          </div>
+        ) : view === 'articles' ? (
+          <ArticleList
+            articles={articles}
+            onNewArticle={handleNewArticle}
+            onEdit={handleEditArticle}
+            onDelete={handleDeleteArticle}
+            onBack={handleBackToBlog}
+          />
+        ) : (
+          <ArticleEditor
+            article={editingArticleId ? getArticle(editingArticleId) : undefined}
+            onSave={handleSaveArticle}
+            onCancel={handleCancelEditor}
+          />
+        )
       }
       rightSidebar={
         <div className="info-section">
+          {view !== 'blog' && (
+            <>
+              <button
+                onClick={handleBackToBlog}
+                style={{
+                  width: '100%',
+                  padding: '8px 16px',
+                  marginBottom: '15px',
+                  backgroundColor: '#0099FF',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                }}
+              >
+                ← Retour au Blog
+              </button>
+              <div className="section-divider" style={{ borderColor: '#444', marginBottom: '15px' }}></div>
+            </>
+          )}
+
+          {view === 'blog' && (
+            <>
+              <button
+                onClick={() => setView('articles')}
+                style={{
+                  width: '100%',
+                  padding: '8px 16px',
+                  marginBottom: '15px',
+                  backgroundColor: '#FF1493',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                }}
+              >
+                ✏️ Gérer mes Articles
+              </button>
+              <div className="section-divider" style={{ borderColor: '#444', marginBottom: '15px' }}></div>
+            </>
+          )}
+
           <h3 style={{ color: '#FF1493', textAlign: 'center', marginBottom: '10px' }}>
             📊 Infos
           </h3>
