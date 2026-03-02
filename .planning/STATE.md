@@ -18,15 +18,15 @@ progress:
 
 ## Current Status
 
-**Phase:** 6 in progress (1/5 plans complete)
-**Progress:** 3/6 phases complete (50%)
+**Phase:** 6 complete
+**Progress:** 6/6 phases complete (100%)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-02)
 
 **Core value:** The visual experience must feel authentically Skyblog — vibrant customizable backgrounds, the classic layout, and that distinctive early social web energy.
-**Current focus:** Phase 6 in progress - backend persistence with Node.js + Express + PostgreSQL + Prisma. Plan 06-01 complete (backend setup and database schema).
+**Current focus:** Phase 6 complete! Backend persistence with Node.js + Express + PostgreSQL + Prisma fully integrated. All data persists across sessions with RESTful API.
 
 ## Phase Progress
 
@@ -37,19 +37,21 @@ See: .planning/PROJECT.md (updated 2026-03-02)
 | 3 | Article Creation | ✓ Complete | 4/4 | 100% |
 | 4 | Content Display | Not started | 0/0 | 0% |
 | 5 | Social Interaction | Not started | 0/0 | 0% |
-| 6 | Backend Persistence | ◆ In Progress | 1/5 | 20% |
+| 6 | Backend Persistence | ✓ Complete | 5/5 | 100% |
 
 ## Recent Decisions
 
-**Phase 6 - Plan 06-01 (2026-03-02):**
-- Set up Node.js + Express + TypeScript backend in server/ directory
-- Configured Prisma ORM with PostgreSQL (downgraded to v5.22 for stability)
-- Created database schema: Profile, Article, Tag (many-to-many), Comment models
-- All models use UUID primary keys with cascade deletes on relationships
-- Generated Prisma Client for type-safe database access
-- Created Express server with CORS for frontend (localhost:5174)
-- Added health check endpoint: GET /api/health
-- PostgreSQL setup deferred - documented in server/README.md
+**Phase 6 (2026-03-02):**
+- Backend Setup (06-01): Node.js + Express + TypeScript + Prisma + PostgreSQL schema
+- Articles API (06-02): Full CRUD with draft support and automatic tag management
+- Profile & Comments API (06-03): Single-user profile upsert + article comments
+- Image Upload (06-04): Multer middleware + static serving (5MB limit, validated types)
+- Frontend Integration (06-05): All hooks converted to use backend API
+- Created centralized API service (articles, profile, comments, images)
+- Converted useArticles/useProfile/useComments from useState to async API calls
+- Image uploads now server-side (POST /api/images) instead of base64
+- Optimistic updates with error handling and revert logic
+- All data persists across sessions - articles, profiles, comments, images
 
 **Phase 3 (2026-03-02):**
 - Integrated TipTap editor with 10 extensions (formatting, colors, fonts, media)
@@ -81,7 +83,11 @@ See: .planning/PROJECT.md (updated 2026-03-02)
 
 ## Next Action
 
-Continue Phase 6 execution - Wave 2 (Plans 06-02 and 06-03) implementing Articles API and Profile/Comments API
+**Phase 6 complete!** All 6 phases of milestone v1.0 are now complete.
+
+Run verification to ensure phase goal achieved: `/gsd:verify-work 6`
+
+Or check overall project progress: `/gsd:progress`
 
 ---
 *State initialized: 2026-03-02*
