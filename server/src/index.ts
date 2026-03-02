@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import articlesRouter from './routes/articles';
 import profileRouter from './routes/profile';
 import commentsRouter from './routes/comments';
+import imagesRouter from './routes/images';
 
 dotenv.config();
 
@@ -19,6 +21,9 @@ app.use(cors({
 // JSON body parser
 app.use(express.json());
 
+// Serve uploaded images as static files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -28,6 +33,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api', articlesRouter);
 app.use('/api', profileRouter);
 app.use('/api', commentsRouter);
+app.use('/api', imagesRouter);
 
 // Start server
 app.listen(PORT, () => {
