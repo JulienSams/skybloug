@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { Profile  } from '../types/Profile';
 import { defaultProfile } from '../types/Profile';
 import * as api from '../services/api';
+import { SERVER_URL } from '../services/api';
 
 export function useProfile() {
   const [profile, setProfile] = useState<Profile>(defaultProfile);
@@ -92,7 +93,7 @@ export function useProfile() {
       const { url } = await api.uploadImage(file);
 
       // Update profile with server URL
-      const fullUrl = `http://localhost:3000${url}`;
+      const fullUrl = `${SERVER_URL}${url}`;
       await updatePhoto(fullUrl);
     } catch (error) {
       console.error('Failed to upload photo:', error);
@@ -126,7 +127,7 @@ export function useProfile() {
       const { url } = await api.uploadImage(file);
 
       // Update profile with server URL
-      const fullUrl = `http://localhost:3000${url}`;
+      const fullUrl = `${SERVER_URL}${url}`;
       await updateBackgroundImage(fullUrl);
     } catch (error) {
       console.error('Failed to upload background image:', error);

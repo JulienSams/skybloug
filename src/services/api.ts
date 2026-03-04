@@ -1,4 +1,6 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Base server URL for image URLs (without /api)
+export const SERVER_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3000';
 
 // Helper for fetch with error handling
 async function fetchJSON(url: string, options?: RequestInit) {
