@@ -5,6 +5,7 @@ interface ArticleListProps {
   onEdit: (articleId: string) => void;
   onDelete: (articleId: string) => void;
   onNewArticle: () => void;
+  onBack?: () => void;
 }
 
 export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: ArticleListProps) {

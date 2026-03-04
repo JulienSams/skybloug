@@ -13,10 +13,10 @@ interface BlogHomeProps {
   onClearTagFilter: () => void;
 }
 
-export function BlogHome({ articles, profile, commentsMap, onArticleClick, onTagClick, selectedTag, onClearTagFilter }: BlogHomeProps) {
+export function BlogHome({ articles, commentsMap, onArticleClick, onTagClick, selectedTag, onClearTagFilter }: BlogHomeProps) {
   // Filter to only published articles and sort by date (newest first)
   const publishedArticles = articles
-    .filter((article) => !article.isDraft)
+    .filter((article) => article.status === 'published')
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (

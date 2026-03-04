@@ -17,7 +17,8 @@ export function useProfile() {
           bio: data.bio || '',
           age: data.age,
           location: data.location || '',
-          photo: data.photoUrl
+          photo: data.photoUrl,
+          backgroundImage: data.backgroundImage || null
         });
       } catch (error) {
         console.error('Failed to fetch profile:', error);

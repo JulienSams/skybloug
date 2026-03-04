@@ -13,7 +13,7 @@ import type { Comment } from './types/Comment'
 import './App.css'
 
 function App() {
-  const { profile, updateName, updateBio, updateAge, updateLocation, updateBackgroundImage, handlePhotoUpload, handleBackgroundUpload } = useProfile();
+  const { profile, updateName, updateBio, updateAge, updateLocation, handlePhotoUpload, handleBackgroundUpload } = useProfile();
   const { articles, createArticle, updateArticle, deleteArticle, getArticle } = useArticles();
   const { getCommentsForArticle, addComment } = useComments();
 
@@ -65,7 +65,7 @@ function App() {
     if (editingArticleId) {
       updateArticle(editingArticleId, { title: article.title, content: article.content, tags: article.tags, status: article.status });
     } else {
-      createArticle(article);
+      createArticle({ ...article, kiffs: 0 });
     }
     setView('articles');
     setEditingArticleId(null);
