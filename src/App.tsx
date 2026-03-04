@@ -27,7 +27,8 @@ function App() {
 
   // Easter egg: Show admin tools
   const [showAdminTools, setShowAdminTools] = useState(false);
-  const [keySequence, setKeySequence] = useState<string[]>([]);
+  // keySequence is used in the Konami code useEffect below
+  const [_keySequence, setKeySequence] = useState<string[]>([]);
   const cooldownRef = useRef(false);
 
   const handleEdit = () => {
