@@ -127,6 +127,63 @@ button, input, textarea, select {
   margin: 15px 0;
 }
 
+/* ============================================
+   Mobile Responsive Utilities
+   ============================================ */
+
+/* Responsive images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive typography adjustments for mobile */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+
+  /* Make buttons more touch-friendly */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improve text readability on mobile */
+  p {
+    line-height: 1.6;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+* {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Easter egg flash animation */
+@keyframes flash {
+  0%, 100% { background-color: var(--skyblog-bg-body); }
+  50% { background-color: #FF1493; }
+}
+
 /*
  * Customization architecture notes:
  * - All colors defined as CSS custom properties for easy theming
@@ -134,4 +191,5 @@ button, input, textarea, select {
  * - Font stack matches authentic Skyblog (Verdana primary)
  * - No rounded corners or shadows - flat 2006 aesthetic
  * - Border styles: simple solid lines, no fancy effects
+ * - Responsive design for mobile and tablet devices
  */

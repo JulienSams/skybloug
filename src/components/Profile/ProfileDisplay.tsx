@@ -3,9 +3,10 @@ import type { Profile } from '../../types/Profile';
 interface ProfileDisplayProps {
   profile: Profile;
   onEdit: () => void;
+  showEditButton?: boolean;
 }
 
-export function ProfileDisplay({ profile, onEdit }: ProfileDisplayProps) {
+export function ProfileDisplay({ profile, onEdit, showEditButton = true }: ProfileDisplayProps) {
   return (
     <div className="profile-section">
       <div className="profile-photo" style={{
@@ -38,22 +39,24 @@ export function ProfileDisplay({ profile, onEdit }: ProfileDisplayProps) {
         {profile.name}
       </h2>
 
-      <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-        <button
-          onClick={onEdit}
-          style={{
-            backgroundColor: '#FF1493',
-            color: '#FFFFFF',
-            border: 'none',
-            padding: '5px 15px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontFamily: 'Verdana, Arial, sans-serif'
-          }}
-        >
-          Modifier
-        </button>
-      </div>
+      {showEditButton && (
+        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+          <button
+            onClick={onEdit}
+            style={{
+              backgroundColor: '#FF1493',
+              color: '#FFFFFF',
+              border: 'none',
+              padding: '5px 15px',
+              cursor: 'pointer',
+              fontSize: '11px',
+              fontFamily: 'Verdana, Arial, sans-serif'
+            }}
+          >
+            Modifier
+          </button>
+        </div>
+      )}
 
       <div className="section-divider" style={{ borderColor: '#444' }}></div>
 

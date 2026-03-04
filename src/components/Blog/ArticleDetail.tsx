@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import type { Article } from '../../types/Article';
 import type { Comment } from '../../types/Comment';
 import { CommentForm } from '../Comments/CommentForm';
 import { CommentList } from '../Comments/CommentList';
+import { kiffArticle } from '../../services/api';
 
 interface ArticleDetailProps {
   article: Article;
@@ -12,6 +14,20 @@ interface ArticleDetailProps {
 }
 
 export function ArticleDetail({ article, comments, onBack, onTagClick, onAddComment }: ArticleDetailProps) {
+  const [kiffs, setKiffs] = useState(article.kiffs);
+  const [hasKiffed, setHasKiffed] = useState(false);
+
+  const handleKiff = async () => {
+    if (hasKiffed) return;
+
+    try {
+      const result = await kiffArticle(article.id);
+      setKiffs(result.kiffs);
+      setHasKiffed(true);
+    } catch (error) {
+      console.error('Error kiffing article:', error);
+    }
+  };
   // Format date as DD/MM/YYYY à HH:MM
   const formatDate = (date: Date) => {
     const d = new Date(date);
@@ -33,7 +49,6 @@ export function ArticleDetail({ article, comments, onBack, onTagClick, onAddComm
           backgroundColor: '#0099FF',
           color: 'white',
           border: 'none',
-          borderRadius: '4px',
           cursor: 'pointer',
           fontSize: '12px',
           fontWeight: 'bold',
@@ -125,11 +140,38 @@ export function ArticleDetail({ article, comments, onBack, onTagClick, onAddComm
             marginTop: '20px',
             paddingTop: '20px',
             borderTop: '1px solid #444',
-            color: '#999',
             fontSize: '11px',
+            display: 'flex',
+            gap: '15px',
+            alignItems: 'center',
           }}
         >
-          <p>{article.kiffs} kiff{article.kiffs !== 1 ? 's' : ''} | {comments.length} commentaire{comments.length !== 1 ? 's' : ''}</p>
+          <button
+            onClick={handleKiff}
+            disabled={hasKiffed}
+            style={{
+              backgroundColor: hasKiffed ? '#FF1493' : '#666',
+              color: 'white',
+              border: 'none',
+              padding: '8px 20px',
+              cursor: hasKiffed ? 'default' : 'pointer',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              fontFamily: 'Verdana, Arial, sans-serif',
+              opacity: hasKiffed ? 0.7 : 1,
+            }}
+            onMouseEnter={(e) => {
+              if (!hasKiffed) e.currentTarget.style.backgroundColor = '#FF1493';
+            }}
+            onMouseLeave={(e) => {
+              if (!hasKiffed) e.currentTarget.style.backgroundColor = '#666';
+            }}
+          >
+            {hasKiffed ? '❤️ Kiffé!' : '🤍 Kiffer cet article'}
+          </button>
+          <span style={{ color: '#999' }}>
+            {kiffs} kiff{kiffs !== 1 ? 's' : ''} | {comments.length} commentaire{comments.length !== 1 ? 's' : ''}
+          </span>
         </div>
       </article>
 

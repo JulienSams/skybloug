@@ -76,7 +76,6 @@ export function ArticleEditor({ onSave, onCancel, initialArticle }: ArticleEdito
     <div style={{
       backgroundColor: '#1a1a1a',
       border: '2px solid #FF1493',
-      borderRadius: '5px',
       overflow: 'hidden',
     }}>
       {/* Title Input */}
@@ -153,7 +152,6 @@ export function ArticleEditor({ onSave, onCancel, initialArticle }: ArticleEdito
                   color: '#000000',
                   padding: '2px 8px',
                   fontSize: '10px',
-                  borderRadius: '3px',
                   fontFamily: 'Verdana, Arial, sans-serif',
                 }}
               >

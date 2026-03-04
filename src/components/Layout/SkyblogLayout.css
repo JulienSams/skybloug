@@ -45,9 +45,55 @@
   border: 1px solid var(--skyblog-border-color);
 }
 
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .skyblog-layout {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .skyblog-sidebar-left,
+  .skyblog-sidebar-right,
+  .skyblog-content {
+    width: 100%;
+    padding: 15px;
+  }
+
+  /* On mobile, reorder: profile -> content -> sidebar */
+  .skyblog-sidebar-left {
+    order: 1;
+  }
+
+  .skyblog-content {
+    order: 2;
+  }
+
+  .skyblog-sidebar-right {
+    order: 3;
+  }
+}
+
+/* Tablet (medium screens) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .skyblog-layout {
+    grid-template-columns: 200px 1fr;
+    gap: 15px;
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  /* Hide right sidebar on tablet, show left sidebar + content */
+  .skyblog-sidebar-right {
+    display: none;
+  }
+}
+
 /*
  * Customization notes for future phases:
  * - Background colors can be overridden via CSS custom properties
- * - Layout widths are fixed to match authentic Skyblog aesthetic
+ * - Layout widths are fixed to match authentic Skyblog aesthetic on desktop
+ * - Mobile/tablet layouts stack columns for better readability
  * - Phase 2+ will add background image support via additional CSS
  */

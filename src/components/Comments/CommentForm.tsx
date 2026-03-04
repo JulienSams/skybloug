@@ -26,7 +26,6 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
       style={{
         backgroundColor: '#1a1a1a',
         padding: '20px',
-        borderRadius: '4px',
         marginTop: '20px',
       }}
     >
@@ -66,8 +65,7 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
             padding: '8px 12px',
             backgroundColor: '#333',
             border: '1px solid #555',
-            borderRadius: '4px',
-            color: 'white',
+                color: 'white',
             fontSize: '13px',
             fontFamily: 'Verdana, Arial, sans-serif',
           }}
@@ -109,8 +107,7 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
             padding: '8px 12px',
             backgroundColor: '#333',
             border: '1px solid #555',
-            borderRadius: '4px',
-            color: 'white',
+                color: 'white',
             fontSize: '13px',
             fontFamily: 'Verdana, Arial, sans-serif',
             resize: 'vertical',
@@ -136,8 +133,7 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
           backgroundColor: isValid ? '#FF1493' : '#666',
           color: 'white',
           border: 'none',
-          borderRadius: '4px',
-          cursor: isValid ? 'pointer' : 'not-allowed',
+            cursor: isValid ? 'pointer' : 'not-allowed',
           fontSize: '13px',
           fontWeight: 'bold',
           fontFamily: 'Verdana, Arial, sans-serif',

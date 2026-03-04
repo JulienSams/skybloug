@@ -61,6 +61,12 @@ export async function deleteArticle(id: string) {
   });
 }
 
+export async function kiffArticle(id: string) {
+  return fetchJSON(`${API_URL}/articles/${id}/kiff`, {
+    method: 'POST'
+  });
+}
+
 // Profile API
 export async function getProfile() {
   return fetchJSON(`${API_URL}/profile`);
@@ -72,6 +78,7 @@ export async function updateProfile(data: {
   age?: number;
   location?: string;
   photoUrl?: string;
+  backgroundImage?: string;
 }) {
   return fetchJSON(`${API_URL}/profile`, {
     method: 'PUT',

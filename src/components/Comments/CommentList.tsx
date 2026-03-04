@@ -41,7 +41,6 @@ export function CommentList({ comments }: CommentListProps) {
             style={{
               backgroundColor: '#1a1a1a',
               padding: '15px',
-              borderRadius: '4px',
               marginBottom: index < comments.length - 1 ? '10px' : '0',
             }}
           >

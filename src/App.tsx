@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SkyblogLayout } from './components/Layout/SkyblogLayout'
 import { ProfileDisplay } from './components/Profile/ProfileDisplay'
 import { ProfileEdit } from './components/Profile/ProfileEdit'
@@ -13,7 +13,7 @@ import type { Comment } from './types/Comment'
 import './App.css'
 
 function App() {
-  const { profile, updateName, updateBio, updateAge, updateLocation, handlePhotoUpload } = useProfile();
+  const { profile, updateName, updateBio, updateAge, updateLocation, updateBackgroundImage, handlePhotoUpload, handleBackgroundUpload } = useProfile();
   const { articles, createArticle, updateArticle, deleteArticle, getArticle } = useArticles();
   const { getCommentsForArticle, addComment } = useComments();
 
@@ -24,6 +24,11 @@ function App() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [allComments, setAllComments] = useState<Record<string, Comment[]>>({});
+
+  // Easter egg: Show admin tools
+  const [showAdminTools, setShowAdminTools] = useState(false);
+  const [keySequence, setKeySequence] = useState<string[]>([]);
+  const cooldownRef = useRef(false);
 
   const handleEdit = () => {
     setIsEditMode(true);
@@ -74,6 +79,54 @@ function App() {
   const handleBackToBlog = () => {
     setView('blog');
   };
+
+  // Easter egg: Konami code to toggle admin mode (up up down down left right left right b a)
+  useEffect(() => {
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent duplicate events
+      if (e.repeat) return;
+
+      if (cooldownRef.current) {
+        console.log('⏳ Cooldown active, ignoring key');
+        return;
+      }
+
+      setKeySequence(prev => {
+        const newSequence = [...prev, e.key].slice(-10); // Keep last 10 keys
+        console.log('🔑 Key sequence:', newSequence.join(' '));
+
+        // Check if konami code matches
+        if (konamiCode.every((key, i) => key === newSequence[i])) {
+          console.log('✨ MATCH! Activating admin mode...');
+
+          // Set cooldown IMMEDIATELY before state update
+          cooldownRef.current = true;
+
+          // Activate admin tools (always set to true, never toggle off)
+          setShowAdminTools(true);
+          console.log('🎮 Admin mode ACTIVATED! (refresh page to disable)');
+
+          // Visual feedback
+          document.body.style.animation = 'flash 0.3s ease-in-out';
+
+          setTimeout(() => {
+            document.body.style.animation = '';
+            cooldownRef.current = false;
+            console.log('✅ Cooldown released');
+          }, 2000); // 2 second cooldown
+
+          return []; // Clear sequence immediately
+        }
+
+        return newSequence;
+      });
+    };
+
+    window.addEventListener('keydown', handleKeyDown, { capture: true });
+    return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
+  }, []);
 
   // Load all comments for all articles on mount
   useEffect(() => {
@@ -132,6 +185,21 @@ function App() {
     ? articles.filter((article) => article.tags.includes(selectedTag))
     : articles;
 
+  // Apply background image from profile
+  useEffect(() => {
+    if (profile.backgroundImage) {
+      document.body.style.backgroundImage = `url(${profile.backgroundImage})`;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundPosition = 'center';
+      document.body.style.backgroundAttachment = 'fixed';
+    } else {
+      document.body.style.backgroundImage = '';
+    }
+  }, [profile.backgroundImage]);
+
+  // Force re-render when showAdminTools changes
+  console.log('🔄 Render - Admin tools:', showAdminTools, 'View:', view);
+
   return (
     <SkyblogLayout
       leftSidebar={
@@ -141,11 +209,13 @@ function App() {
             onSave={handleSave}
             onCancel={handleCancel}
             onPhotoUpload={handlePhotoUpload}
+            onBackgroundUpload={handleBackgroundUpload}
           />
         ) : (
           <ProfileDisplay
             profile={profile}
             onEdit={handleEdit}
+            showEditButton={showAdminTools}
           />
         )
       }
@@ -199,7 +269,6 @@ function App() {
                   backgroundColor: '#0099FF',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '4px',
                   cursor: 'pointer',
                   fontSize: '12px',
                   fontWeight: 'bold',
@@ -211,10 +280,13 @@ function App() {
             </>
           )}
 
-          {view === 'blog' && (
+          {view === 'blog' && showAdminTools && (
             <>
               <button
-                onClick={() => setView('articles')}
+                onClick={() => {
+                  console.log('📝 Managing articles');
+                  setView('articles');
+                }}
                 style={{
                   width: '100%',
                   padding: '8px 16px',
@@ -222,7 +294,6 @@ function App() {
                   backgroundColor: '#FF1493',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '4px',
                   cursor: 'pointer',
                   fontSize: '12px',
                   fontWeight: 'bold',
@@ -232,6 +303,24 @@ function App() {
               </button>
               <div className="section-divider" style={{ borderColor: '#444', marginBottom: '15px' }}></div>
             </>
+          )}
+
+          {/* Debug info */}
+          {import.meta.env.DEV && (
+            <div style={{
+              position: 'fixed',
+              bottom: '10px',
+              right: '10px',
+              background: 'rgba(0,0,0,0.8)',
+              color: '#0F0',
+              padding: '10px',
+              fontSize: '10px',
+              fontFamily: 'monospace',
+              zIndex: 9999
+            }}>
+              <div>Admin: {showAdminTools ? '✅' : '❌'}</div>
+              <div>View: {view}</div>
+            </div>
           )}
 
           <h3 style={{ color: '#FF1493', textAlign: 'center', marginBottom: '10px' }}>

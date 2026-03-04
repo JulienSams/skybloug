@@ -4,7 +4,8 @@ import {
   getArticles,
   getArticle,
   updateArticle,
-  deleteArticle
+  deleteArticle,
+  kiffArticle
 } from '../controllers/articleController';
 
 const router = Router();
@@ -15,5 +16,6 @@ router.get('/articles', getArticles);
 router.get('/articles/:id', getArticle);
 router.put('/articles/:id', updateArticle);
 router.delete('/articles/:id', deleteArticle);
+router.post('/articles/:id/kiff', kiffArticle);
 
 export default router;

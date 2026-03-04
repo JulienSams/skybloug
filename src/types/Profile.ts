@@ -4,6 +4,7 @@ export interface Profile {
   bio: string;
   age: number | null;
   location: string;
+  backgroundImage: string | null;
 }
 
 export const defaultProfile: Profile = {
@@ -12,4 +13,5 @@ export const defaultProfile: Profile = {
   bio: 'Bienvenue sur mon skyblog! Ici je partage ma passion pour la musique, mes photos et mes coups de cœur du moment.',
   age: 25,
   location: 'Paris, France',
+  backgroundImage: null,
 };

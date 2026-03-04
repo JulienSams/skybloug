@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: skyblog-backend
+    env: node
+    region: frankfurt
+    plan: free
+    buildCommand: npm install && npm run build && npx prisma generate && npx prisma migrate deploy
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: skyblog-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+
+databases:
+  - name: skyblog-db
+    databaseName: skyblog
+    user: skyblog
+    region: frankfurt
+    plan: free

@@ -13,8 +13,30 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Configure CORS for frontend
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  /\.onrender\.com$/  // Allow all Render.com subdomains
+];
+
 app.use(cors({
-  origin: ['http://localhost:5174', 'http://localhost:5175'],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    // Check if origin matches allowed patterns
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (typeof allowed === 'string') return origin === allowed;
+      if (allowed instanceof RegExp) return allowed.test(origin);
+      return false;
+    });
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 

@@ -34,7 +34,6 @@ export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: Articl
             fontSize: '14px',
             fontFamily: 'Verdana, Arial, sans-serif',
             fontWeight: 'bold',
-            borderRadius: '3px',
           }}
         >
           ✏️ New Article
@@ -61,7 +60,6 @@ export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: Articl
               style={{
                 backgroundColor: '#1a1a1a',
                 border: '1px solid #444',
-                borderRadius: '5px',
                 padding: '15px',
                 marginBottom: '15px',
                 display: 'flex',
@@ -84,8 +82,7 @@ export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: Articl
                     color: '#FFFFFF',
                     padding: '2px 8px',
                     fontSize: '10px',
-                    borderRadius: '3px',
-                    fontFamily: 'Verdana, Arial, sans-serif',
+                            fontFamily: 'Verdana, Arial, sans-serif',
                     textTransform: 'uppercase',
                   }}>
                     {article.status}
@@ -109,7 +106,6 @@ export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: Articl
                           color: '#000000',
                           padding: '2px 6px',
                           fontSize: '9px',
-                          borderRadius: '2px',
                           fontFamily: 'Verdana, Arial, sans-serif',
                         }}
                       >
@@ -131,8 +127,7 @@ export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: Articl
                     cursor: 'pointer',
                     fontSize: '11px',
                     fontFamily: 'Verdana, Arial, sans-serif',
-                    borderRadius: '3px',
-                  }}
+                          }}
                 >
                   Edit
                 </button>
@@ -146,8 +141,7 @@ export function ArticleList({ articles, onEdit, onDelete, onNewArticle }: Articl
                     cursor: 'pointer',
                     fontSize: '11px',
                     fontFamily: 'Verdana, Arial, sans-serif',
-                    borderRadius: '3px',
-                  }}
+                          }}
                 >
                   Delete
                 </button>

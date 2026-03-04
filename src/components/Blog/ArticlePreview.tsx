@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import type { Article } from '../../types/Article';
 import type { Comment } from '../../types/Comment';
+import { kiffArticle } from '../../services/api';
 
 interface ArticlePreviewProps {
   article: Article;
@@ -9,6 +11,21 @@ interface ArticlePreviewProps {
 }
 
 export function ArticlePreview({ article, comments, onArticleClick, onTagClick }: ArticlePreviewProps) {
+  const [kiffs, setKiffs] = useState(article.kiffs);
+  const [hasKiffed, setHasKiffed] = useState(false);
+
+  const handleKiff = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (hasKiffed) return; // Prevent multiple kiffs
+
+    try {
+      const result = await kiffArticle(article.id);
+      setKiffs(result.kiffs);
+      setHasKiffed(true);
+    } catch (error) {
+      console.error('Error kiffing article:', error);
+    }
+  };
   // Format date as DD/MM/YYYY à HH:MM
   const formatDate = (date: Date) => {
     const d = new Date(date);
@@ -42,7 +59,6 @@ export function ArticlePreview({ article, comments, onArticleClick, onTagClick }
         marginBottom: '30px',
         backgroundColor: '#1a1a1a',
         padding: '20px',
-        borderRadius: '4px',
         cursor: 'pointer',
         transition: 'background-color 0.2s',
       }}
@@ -85,7 +101,6 @@ export function ArticlePreview({ article, comments, onArticleClick, onTagClick }
             style={{
               maxWidth: '100%',
               height: 'auto',
-              borderRadius: '4px',
               display: 'block',
             }}
           />
@@ -111,7 +126,22 @@ export function ArticlePreview({ article, comments, onArticleClick, onTagClick }
           marginBottom: '15px',
         }}
       >
-        <span style={{ cursor: 'pointer' }}>{article.kiffs} kiff{article.kiffs !== 1 ? 's' : ''}</span> |
+        <button
+          onClick={handleKiff}
+          disabled={hasKiffed}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: hasKiffed ? '#FF1493' : '#999',
+            cursor: hasKiffed ? 'default' : 'pointer',
+            fontSize: '11px',
+            padding: 0,
+            fontFamily: 'Verdana, Arial, sans-serif',
+            textDecoration: hasKiffed ? 'none' : 'underline',
+          }}
+        >
+          {hasKiffed ? '❤️' : '🤍'} {kiffs} kiff{kiffs !== 1 ? 's' : ''}
+        </button> |
         <span style={{ marginLeft: '5px', cursor: 'pointer' }}>
           {comments.length} commentaire{comments.length !== 1 ? 's' : ''}
         </span>
@@ -126,7 +156,6 @@ export function ArticlePreview({ article, comments, onArticleClick, onTagClick }
               style={{
                 backgroundColor: '#0a0a0a',
                 padding: '10px',
-                borderRadius: '4px',
                 marginBottom: '8px',
               }}
             >

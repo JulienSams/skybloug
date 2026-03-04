@@ -99,6 +99,40 @@ export function useProfile() {
     }
   };
 
+  const updateBackgroundImage = async (backgroundImage: string | null) => {
+    setProfile(prev => ({ ...prev, backgroundImage }));
+    try {
+      await api.updateProfile({ backgroundImage: backgroundImage || undefined });
+    } catch (error) {
+      console.error('Failed to update background image:', error);
+    }
+  };
+
+  const handleBackgroundUpload = async (file: File): Promise<void> => {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      throw new Error('File must be an image');
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      throw new Error('Image must be smaller than 5MB');
+    }
+
+    try {
+      // Upload to server
+      const { url } = await api.uploadImage(file);
+
+      // Update profile with server URL
+      const fullUrl = `http://localhost:3000${url}`;
+      await updateBackgroundImage(fullUrl);
+    } catch (error) {
+      console.error('Failed to upload background image:', error);
+      throw error;
+    }
+  };
+
   return {
     profile,
     updatePhoto,
@@ -106,7 +140,9 @@ export function useProfile() {
     updateBio,
     updateAge,
     updateLocation,
+    updateBackgroundImage,
     handlePhotoUpload,
+    handleBackgroundUpload,
     loading,
   };
 }

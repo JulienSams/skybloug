@@ -6,9 +6,10 @@ interface ProfileEditProps {
   onSave: (updatedProfile: Partial<Profile>) => void;
   onCancel: () => void;
   onPhotoUpload: (file: File) => Promise<void>;
+  onBackgroundUpload: (file: File) => Promise<void>;
 }
 
-export function ProfileEdit({ profile, onSave, onCancel, onPhotoUpload }: ProfileEditProps) {
+export function ProfileEdit({ profile, onSave, onCancel, onPhotoUpload, onBackgroundUpload }: ProfileEditProps) {
   const [formData, setFormData] = useState({
     name: profile.name,
     bio: profile.bio,
@@ -16,8 +17,11 @@ export function ProfileEdit({ profile, onSave, onCancel, onPhotoUpload }: Profil
     location: profile.location,
   });
   const [photoPreview, setPhotoPreview] = useState(profile.photo);
+  const [backgroundPreview, setBackgroundPreview] = useState(profile.backgroundImage);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [backgroundUploadError, setBackgroundUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const backgroundInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
@@ -39,6 +43,29 @@ export function ProfileEdit({ profile, onSave, onCancel, onPhotoUpload }: Profil
       reader.readAsDataURL(file);
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : 'Upload failed');
+    }
+  };
+
+  const handleBackgroundClick = () => {
+    backgroundInputRef.current?.click();
+  };
+
+  const handleBackgroundChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setBackgroundUploadError(null);
+
+    try {
+      await onBackgroundUpload(file);
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setBackgroundPreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      setBackgroundUploadError(error instanceof Error ? error.message : 'Upload failed');
     }
   };
 
@@ -199,6 +226,71 @@ export function ProfileEdit({ profile, onSave, onCancel, onPhotoUpload }: Profil
                 resize: 'vertical'
               }}
             />
+          </div>
+
+          {/* Background Image Upload */}
+          <div style={{ marginBottom: '15px' }}>
+            <label style={{ display: 'block', marginBottom: '5px' }}>
+              <strong>Image de fond:</strong>
+            </label>
+
+            {backgroundPreview && (
+              <div style={{
+                width: '100%',
+                height: '80px',
+                backgroundImage: `url(${backgroundPreview})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                border: '2px solid #444',
+                marginBottom: '8px',
+                position: 'relative'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <span style={{ color: '#FFFFFF', fontSize: '10px' }}>Preview</span>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleBackgroundClick}
+              style={{
+                width: '100%',
+                backgroundColor: '#0099FF',
+                color: '#FFFFFF',
+                border: 'none',
+                padding: '8px',
+                cursor: 'pointer',
+                fontSize: '11px',
+                fontFamily: 'Verdana, Arial, sans-serif'
+              }}
+            >
+              {backgroundPreview ? '📷 Changer l\'image de fond' : '📷 Ajouter une image de fond'}
+            </button>
+
+            <input
+              ref={backgroundInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleBackgroundChange}
+              style={{ display: 'none' }}
+            />
+
+            {backgroundUploadError && (
+              <p style={{ color: '#FF1493', fontSize: '10px', marginTop: '5px' }}>
+                {backgroundUploadError}
+              </p>
+            )}
           </div>
 
           {/* Buttons */}
