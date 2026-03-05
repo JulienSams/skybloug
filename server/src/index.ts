@@ -24,7 +24,8 @@ if (!fs.existsSync(uploadsDir)) {
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  /\.onrender\.com$/  // Allow all Render.com subdomains
+  /\.onrender\.com$/,  // Allow all Render.com subdomains
+  /\.railway\.app$/    // Allow all Railway.app subdomains
 ];
 
 app.use(cors({
